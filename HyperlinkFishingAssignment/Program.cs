@@ -52,7 +52,7 @@ namespace HyperlinkFishingAssignment
 
             Console.WriteLine(e.Name);
 
-            HtmlSecurityService.ProcessHtmlFile(e.FullPath);
+            HtmlSecurityService.ProcessHtmlFileWithStreams(e.FullPath);
         }
     }
 }
