@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HyperlinkFishingAssignment
@@ -16,40 +15,11 @@ namespace HyperlinkFishingAssignment
             // yes - ok, proceed
             // no - replace link with text
 
+            CreateDestinationDirectory();
+            SetupDirectoryWatcher(true, Configuration.WatchedDirtectoryPath);
 
             while (true)
             {
-                CreateDestinationDirectory();
-
-                // Take all HTML files of source directory
-                var htmlFiles = GetHtmlFilesFromDirectory(Configuration.WatchedDirtectoryPath);
-                if (!htmlFiles?.Any() ?? true)
-                {
-                    Console.WriteLine("No files to process.");
-                    continue;
-                }
-
-                //Parallel.ForEach(htmlFiles, htmlFile =>
-                //{
-                //    HtmlSecurityService.ProcessHtmlFile(htmlFile);
-                //});
-
-                var tasks = htmlFiles.Select(file => HtmlSecurityService.ProcessHtmlFile(file)).ToArray();
-                await Task.WhenAll(tasks);
-
-                foreach (var task in tasks)
-                {
-                    if (task.IsFaulted)
-                    {
-                        Console.WriteLine(task.Exception);
-                    }
-                    else if (task.IsCompleted)
-                    {
-                        Console.WriteLine($"Task with ID {task.Id} has finished succesfully.");
-                    }
-                }
-
-                await Task.Delay(Configuration.WatchDirectoryIntervalInMiliseconds);
             }
         }
 
@@ -61,15 +31,28 @@ namespace HyperlinkFishingAssignment
             }
         }
 
-        private static string[] GetHtmlFilesFromDirectory(string directoryPath)
+        private static FileSystemWatcher SetupDirectoryWatcher(bool enabledAfterCreation, string directoryPath)
         {
-            if (!Directory.Exists(directoryPath))
+            var watcher = new FileSystemWatcher
             {
-                Console.WriteLine("Watched directory does not exist.");
-                return Array.Empty<string>();
-            }
+                NotifyFilter = NotifyFilters.LastWrite,
+                Filter = "*.html",
+                Path = directoryPath,
+                EnableRaisingEvents = enabledAfterCreation
+            };
 
-            return Directory.GetFiles(directoryPath, "*.html", SearchOption.TopDirectoryOnly);
+            watcher.Changed += WatchedDirectoryChangedHandler;
+
+            return watcher;
+        }
+
+        private static void WatchedDirectoryChangedHandler(object sender, FileSystemEventArgs e)
+        {
+            if (!File.Exists(e.FullPath)) return;
+
+            Console.WriteLine(e.Name);
+
+            HtmlSecurityService.ProcessHtmlFile(e.FullPath);
         }
     }
 }

@@ -13,6 +13,4 @@ D:\Education\Projects\HyperlinkFishingAssignment\HyperlinkFishingAssignment\obj\
 D:\Education\Projects\HyperlinkFishingAssignment\HyperlinkFishingAssignment\obj\Debug\net5.0\ref\HyperlinkFishingAssignment.dll
 D:\Education\Projects\HyperlinkFishingAssignment\HyperlinkFishingAssignment\obj\Debug\net5.0\HyperlinkFishingAssignment.pdb
 D:\Education\Projects\HyperlinkFishingAssignment\HyperlinkFishingAssignment\obj\Debug\net5.0\HyperlinkFishingAssignment.genruntimeconfig.cache
-D:\Education\Projects\HyperlinkFishingAssignment\HyperlinkFishingAssignment\bin\Debug\net5.0\Html Samples\Sample1.html
 D:\Education\Projects\HyperlinkFishingAssignment\HyperlinkFishingAssignment\obj\Debug\net5.0\HyperlinkFishingAssignment.csproj.AssemblyReference.cache
-D:\Education\Projects\HyperlinkFishingAssignment\HyperlinkFishingAssignment\bin\Debug\net5.0\Html Samples\Sample2.html
