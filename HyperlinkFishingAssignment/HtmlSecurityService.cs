@@ -8,13 +8,13 @@ namespace HyperlinkFishingAssignment
 {
     public static class HtmlSecurityService
     {
-        public static async Task ProcessHtmlFileWithStreams(string htmlFile)
+        public static async ValueTask ProcessHtmlFileWithStreams(string htmlFile)
         {
             if (!File.Exists(htmlFile)) return;
 
             var destinationFilePath = Path.Combine(Configuration.DestinationDirectory, new FileInfo(htmlFile).Name);
 
-            using (FileStream sourceFileStream = new FileStream(htmlFile, FileMode.Open, FileAccess.Read, FileShare.None))
+            using (var sourceFileStream = new FileStream(htmlFile, FileMode.Open, FileAccess.Read, FileShare.None))
             using (var destinationFileStream = new FileStream(destinationFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
             using (var streamReader = new StreamReader(sourceFileStream, Encoding.UTF8))
             {
@@ -31,11 +31,11 @@ namespace HyperlinkFishingAssignment
             File.Delete(htmlFile);
         }
 
-        public static async Task ProcessHtmlFile(string htmlFile)
+        public static async ValueTask ProcessHtmlFile(string htmlFile)
         {
             if (!File.Exists(htmlFile)) return;
 
-            var content = File.ReadAllText(htmlFile);
+            var content = await File.ReadAllTextAsync(htmlFile);
 
             var processedContent = Configuration.HyperlinkRegex.Replace(content, CheckAndReplaceHyperlink);
 

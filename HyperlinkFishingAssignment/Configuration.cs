@@ -12,6 +12,5 @@ namespace HyperlinkFishingAssignment
         public static string DestinationDirectory => AppDomain.CurrentDomain.BaseDirectory + "Results";
 
         public static Regex HyperlinkRegex = new Regex(@"(<a href=.+>.+<\/a>)");
-
     }
 }
