@@ -8,27 +8,13 @@ namespace HyperlinkFishingAssignment
     {
         static async Task Main(string[] args)
         {
-            // For each HTML file we need:
-            // open and read (better as Stream)
-            // if we find Hyperlink (<a href="Muku"> Kuku </a>)
-            // check whether link equals to text
-            // yes - ok, proceed
-            // no - replace link with text
+            Directory.CreateDirectory(Configuration.WatchedDirtectoryPath);
+            Directory.CreateDirectory(Configuration.DestinationDirectory);
 
-            CreateDestinationDirectory();
             SetupDirectoryWatcher(true, Configuration.WatchedDirtectoryPath);
+            HtmlFilesConsumer.Run();
 
-            while (true)
-            {
-            }
-        }
-
-        private static void CreateDestinationDirectory()
-        {
-            if (!Directory.Exists(Configuration.DestinationDirectory))
-            {
-                Directory.CreateDirectory(Configuration.DestinationDirectory);
-            }
+            Console.ReadLine();
         }
 
         private static FileSystemWatcher SetupDirectoryWatcher(bool enabledAfterCreation, string directoryPath)
@@ -50,9 +36,17 @@ namespace HyperlinkFishingAssignment
         {
             if (!File.Exists(e.FullPath)) return;
 
-            Console.WriteLine(e.Name);
+            var currentFileInfo = new FileInfo(e.FullPath);
+            var currentFileKey = GetFileKey(currentFileInfo);
 
-            HtmlSecurityService.ProcessHtmlFileWithStreams(e.FullPath);
+            if (HtmlFilesConsumer.Buffer.TryGetValue(currentFileKey, out var buffer)) return;
+
+            HtmlFilesConsumer.Buffer.TryAdd(currentFileKey, currentFileInfo);
+        }
+
+        private static string GetFileKey(FileInfo fileInfo)
+        {
+            return fileInfo.FullName + fileInfo.CreationTime.ToString("F");
         }
     }
 }
